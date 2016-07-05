@@ -1,0 +1,33 @@
+{
+    "name": "mailru/queue-processor",
+    "description": "Queue processor",
+    "keywords": [
+        "queue processor",
+        "queue",
+        "php"
+    ],
+    "homepage": "https://github.com/mailru/queue-processor",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mougrim",
+            "email": "rinat@mougrim.ru"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0",
+        "ext-pcntl": "*",
+        "mougrim/php-logger": "^2.0",
+        "mougrim/pcntl-signal-handler": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "MailRu\\QueueProcessor\\": "src"
+        }
+    },
+    "require-dev": {
+        "phpro/grumphp": "^0.9.1",
+        "friendsofphp/php-cs-fixer": "^1.11"
+    }
+}

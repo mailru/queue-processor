@@ -13,10 +13,14 @@
         {
             "name": "Mougrim",
             "email": "rinat@mougrim.ru"
+        },
+        {
+            "name": "Stanislav Vetlovskiy",
+            "email": "mrerliz@gmail.com"
         }
     ],
     "require": {
-        "php": ">=5.5.0",
+        "php": "^5.6",
         "ext-pcntl": "*",
         "mougrim/php-logger": "^2.0",
         "mougrim/pcntl-signal-handler": "^1.0"

@@ -28,6 +28,7 @@
     },
     "require-dev": {
         "phpro/grumphp": "^0.9.1",
-        "friendsofphp/php-cs-fixer": "^1.11"
+        "friendsofphp/php-cs-fixer": "^1.11",
+        "phpunit/phpunit": "^5.4"
     }
 }

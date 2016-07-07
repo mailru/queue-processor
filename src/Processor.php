@@ -2,6 +2,7 @@
 
 namespace MailRu\QueueProcessor;
 
+use Exception;
 use MailRu\QueueProcessor\Config\ConfigReaderInterface;
 use MailRu\QueueProcessor\Queue\AbstractQueue;
 use MailRu\QueueProcessor\Util\ArrayUtils;
@@ -185,7 +186,7 @@ class Processor
                         $worker = $queue->getWorker();
                         $worker->setNumber($workerNumber);
                         $worker->run($tasksForWorker);
-                    } catch (\Exception $exception) {
+                    } catch (Exception $exception) {
                         Logger::getLogger('queue')->error('Exception in worker', $exception);
                         $code = 255;
                     }
@@ -194,7 +195,7 @@ class Processor
                     $this->end($code);
                 }
             }
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             Logger::getLogger('queue')->error('Exception in processor', $exception);
             $this->terminate(array_keys($this->childrenInfo));
             throw $exception;
@@ -263,7 +264,7 @@ class Processor
             if (!isset($this->childrenInfo[$exitedWorkerPid])) {
                 Logger::getLogger('queue')->error(
                     'pcntl_waitpid return unknown pid:'.var_export($exitedWorkerPid, true),
-                    new \Exception()
+                    new Exception()
                 );
                 continue;
             }
@@ -466,7 +467,7 @@ class Processor
                             array_fill(0, $queue->getPriority(), $queueNick)
                         );
                         $this->queuesInfo[$queueNick]['state'] = 'active';
-                    } catch (\Exception $exception) {
+                    } catch (Exception $exception) {
                         Logger::getLogger('queue')->error('Can`t create queue', $exception);
                         $this->queuesInfo[$queueNick]['state'] = 'error';
                         $this->queuesInfo[$queueNick]['message'] = $exception->getMessage();
@@ -589,27 +590,16 @@ class Processor
             if (isset($pid)) {
                 usleep(1000000);
             }
-            $oldErrorReporting = error_reporting();
-            $oldDisplayErrors = ini_get('display_errors');
-            ob_start();
-            ob_implicit_flush(false);
-            error_reporting(E_ALL & (~E_NOTICE) & (~E_STRICT));
-            ini_set('display_errors', 'On');
 
             $pid = pcntl_fork();
 
-            ini_set('display_errors', $oldDisplayErrors);
-            error_reporting($oldErrorReporting);
-            $output = ob_get_clean();
             if ($pid >= 0) {
                 return $pid;
             }
+            $error = pcntl_get_last_error();
             Logger::getLogger('queue')->warn(
-                "Can`t fork, retryNumber={$i}, output: '{$output}', pid: '".var_export($pid, true)."', error:'".print_r(
-                    error_get_last(),
-                    true
-                )."'",
-                new \Exception()
+                "Can`t fork, retryNumber={$i}, pid: '".var_export($pid, true)."', error: '{$error}'",
+                new Exception()
             );
         }
 

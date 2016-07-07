@@ -4,6 +4,7 @@ namespace MailRu\QueueProcessor\Demo\config;
 
 use MailRu\QueueProcessor\Config\AutoConfigReader;
 use MailRu\QueueProcessor\Demo\Worker\TestWorker;
+use MailRu\QueueProcessor\Queue\FileQueue;
 
 /**
  * @var \Composer\Autoload\ClassLoader $loader
@@ -22,6 +23,7 @@ return [
     'mainConfig' => [
         'queues' => [
             'testQueue' => [
+                'class' => FileQueue::class,
                 'info' => 'test worker',
                 'statusFile' => __DIR__.'/../shared/queue/testQueue/status',
                 'tasksFile' => __DIR__.'/../shared/queue/testQueue/tasks',

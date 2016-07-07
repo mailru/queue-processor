@@ -1,6 +1,6 @@
 <?php
 
-namespace MailRu\QueueProcessor\Processor;
+namespace MailRu\QueueProcessor;
 
 use MailRu\QueueProcessor\Config\ConfigReaderInterface;
 use MailRu\QueueProcessor\Queue\AbstractQueue;
@@ -12,7 +12,7 @@ use Mougrim\Logger\LoggerNDC;
 use Mougrim\Pcntl\SignalHandler;
 use RuntimeException;
 
-abstract class AbstractProcessor
+class Processor
 {
     protected $mainConfig;
     protected $terminate = false;
@@ -449,9 +449,10 @@ abstract class AbstractProcessor
                         unset($queueConfig['enabled']);
                         $workerConfig = $queueConfig['worker'];
                         unset($queueConfig['worker']);
-                        // todo class from config
+                        $queueClass = $queueConfig['class'];
+                        unset($queueConfig['class']);
                         /** @var AbstractQueue $queue */
-                        $queue = $this->create($this->getQueueClass(), $queueConfig);
+                        $queue = $this->create($queueClass, $queueConfig);
                         $queue->setProcessor($this);
                         $workerClass = $workerConfig['class'];
                         unset($workerConfig['class']);
@@ -534,6 +535,10 @@ abstract class AbstractProcessor
 
             $mainQueueConfig = $this->mainConfig['queues'][$queueNick];
 
+            if (!array_key_exists('class', $mainQueueConfig)) {
+                throw new RuntimeException("Attribute 'class' is require for queue");
+            }
+
             if (!array_key_exists('worker', $mainQueueConfig)) {
                 throw new RuntimeException("Attribute 'worker' is require for queue");
             }
@@ -572,8 +577,6 @@ abstract class AbstractProcessor
         $this->getSignalHandler()->addHandler(SIGTERM, [$this, 'signalTerminate'], false);
         $this->getSignalHandler()->addHandler(SIGINT, [$this, 'signalTerminate'], false);
     }
-
-    abstract protected function getQueueClass();
 
     protected function end($status = 0)
     {

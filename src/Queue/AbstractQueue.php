@@ -2,9 +2,10 @@
 
 namespace MailRu\QueueProcessor\Queue;
 
-use MailRu\QueueProcessor\Processor\AbstractProcessor;
+use MailRu\QueueProcessor\Processor;
 use MailRu\QueueProcessor\Task;
 use MailRu\QueueProcessor\Worker\AbstractWorker;
+use RuntimeException;
 
 abstract class AbstractQueue
 {
@@ -67,11 +68,13 @@ abstract class AbstractQueue
 
     /**
      * @return int
+     *
+     * @throws RuntimeException
      */
     public function getPriority()
     {
         if ($this->priority === null) {
-            throw new \Exception("Property 'priority' is require for queue");
+            throw new RuntimeException("Property 'priority' is require for queue");
         }
 
         return $this->priority;
@@ -87,28 +90,32 @@ abstract class AbstractQueue
 
     /**
      * @return int
+     *
+     * @throws RuntimeException
      */
     public function getTasksQtyPerWorker()
     {
         if ($this->tasksQtyPerWorker === null) {
-            throw new \Exception("Property 'tasksQtyPerWorker' is require for queue");
+            throw new RuntimeException("Property 'tasksQtyPerWorker' is require for queue");
         }
 
         return $this->tasksQtyPerWorker;
     }
 
-    public function setProcessor(AbstractProcessor $processor)
+    public function setProcessor(Processor $processor)
     {
         $this->processor = $processor;
     }
 
     /**
-     * @return AbstractProcessor
+     * @return Processor
+     *
+     * @throws RuntimeException
      */
     public function getProcessor()
     {
         if ($this->processor === null) {
-            throw new \Exception("Property 'processor' is require for queue");
+            throw new RuntimeException("Property 'processor' is require for queue");
         }
 
         return $this->processor;
@@ -121,11 +128,13 @@ abstract class AbstractQueue
 
     /**
      * @return AbstractWorker
+     *
+     * @throws RuntimeException
      */
     public function getWorker()
     {
         if ($this->worker === null) {
-            throw new \Exception("Property 'worker' is require for queue");
+            throw new RuntimeException("Property 'worker' is require for queue");
         }
 
         return $this->worker;

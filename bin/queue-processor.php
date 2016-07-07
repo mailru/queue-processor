@@ -2,7 +2,7 @@
 <?php
 namespace MailRu\QueueProcessor\bin;
 
-use MailRu\QueueProcessor\Processor\FileProcessor;
+use MailRu\QueueProcessor\Processor;
 use Mougrim\Logger\Logger;
 use Mougrim\Pcntl\SignalHandler;
 
@@ -70,7 +70,7 @@ if (isset($config['loggerConfig']) && is_array($config['loggerConfig'])) {
     $loggerConfig = $config['loggerConfig'];
 }
 Logger::configure($loggerConfig);
-$processor = new FileProcessor();
+$processor = new Processor();
 $signalHandler = new SignalHandler();
 $processor->setSignalHandler($signalHandler);
 

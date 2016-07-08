@@ -1,7 +1,7 @@
 {
     "testPool": {
         "servers": [
-            "mougrim-1215N"
+            "nodename"
         ],
         "maxWorkersQty": 2,
         "queues": {

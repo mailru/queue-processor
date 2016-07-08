@@ -5,7 +5,7 @@ namespace MailRu\QueueProcessor\Demo\config;
 return [
     'testPool' => [
         'servers' => [
-            'mougrim-1215N',
+            php_uname('n'), // the network node hostname for this pool
         ],
         'maxWorkersQty' => 2,
         'queues' => [

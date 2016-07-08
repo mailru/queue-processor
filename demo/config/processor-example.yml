@@ -1,6 +1,6 @@
 "testPool":
   "servers":
-    - "mougrim-1215N"
+    - "nodename" # the network node hostname
   "maxWorkersQty": 2
   "queues":
     "testQueue":

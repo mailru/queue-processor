@@ -84,10 +84,10 @@ class ArrayUtils
      */
     public static function mergeArray($a, $b)
     {
-        return self::_mergeArray(func_get_args(), false);
+        return self::doMergeArray(func_get_args(), false);
     }
 
-    private static function _mergeArray(array $arrays, $isIntegerSafe)
+    private static function doMergeArray(array $arrays, $isIntegerSafe)
     {
         $res = array_shift($arrays);
         while ($arrays) {
@@ -96,7 +96,7 @@ class ArrayUtils
                 if (is_int($k) && !$isIntegerSafe) {
                     isset($res[$k]) ? $res[] = $v : $res[$k] = $v;
                 } elseif (is_array($v) && isset($res[$k]) && is_array($res[$k])) {
-                    $res[$k] = self::_mergeArray([$res[$k], $v], $isIntegerSafe);
+                    $res[$k] = self::doMergeArray([$res[$k], $v], $isIntegerSafe);
                 } else {
                     $res[$k] = $v;
                 }

@@ -253,7 +253,14 @@ class Processor
             }
 
             if ($exitedWorkerPid === -1) {
-                Logger::getLogger('queue')->debug("Can't wait pid, error:'".var_export(error_get_last(), true)."'");
+                $error_number = pcntl_get_last_error();
+                $error = "[{$error_number}] " . pcntl_strerror($error_number);
+                $message = "Can't wait pid, error: '{$error}'";
+                if ($error_number === PCNTL_ECHILD) {
+                    Logger::getLogger('queue')->debug($message);
+                } else {
+                    Logger::getLogger('queue')->error($message);
+                }
 
                 return;
             }
@@ -596,7 +603,8 @@ class Processor
             if ($pid >= 0) {
                 return $pid;
             }
-            $error = pcntl_get_last_error();
+            $error_number = pcntl_get_last_error();
+            $error = "[{$error_number}] " . pcntl_strerror($error_number);
             Logger::getLogger('queue')->warn(
                 "Can`t fork, retryNumber={$i}, pid: '".var_export($pid, true)."', error: '{$error}'",
                 new Exception()

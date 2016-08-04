@@ -23,15 +23,16 @@ if (file_exists($autoloadPath)) {
 function help($exitCode = 0)
 {
     $commandName = $_SERVER['argv'][0];
-    echo "Usage: {$commandName} --config=<config>\n";
+    echo "Usage: {$commandName} [--force-pool=<poolName>] --config=<config>\n";
     echo "\n";
-    echo "  --config=<config> Path to QueueProcessor config\n";
-    echo "  -h                This help\n";
+    echo "  --config=<config>       Path to QueueProcessor config.\n";
+    echo "  --force-pool=<poolName> Pool name from dynamic processor config.\n";
+    echo "  -h                      This help.\n";
     echo "\n";
     exit($exitCode);
 }
 
-$params = getopt('h', ['config:', 'help']);
+$params = getopt('h', ['config:', 'help', 'force-pool:']);
 if (!$params) {
     help(1);
 
@@ -92,6 +93,10 @@ $processor->setConfigReaderConfig($config['processorConfig']['configReader']);
 
 if (isset($config['processorConfig']['statusFilePath'])) {
     $processor->setStatusFilePath($config['processorConfig']['statusFilePath']);
+}
+
+if (isset($params['force-pool'])) {
+    $processor->setForcePool($params['force-pool']);
 }
 
 $processor->run();

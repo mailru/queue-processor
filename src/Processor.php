@@ -31,7 +31,7 @@ class Processor
     private $statusFilePath;
     private $pool;
     private $poolConfig;
-    private $customPool;
+    private $forcePool;
     /** @var AbstractQueue[] */
     private $queues;
 
@@ -53,9 +53,9 @@ class Processor
         'servers',
     ];
 
-    public function setCustomPool($customPool)
+    public function setForcePool($forcePool)
     {
-        $this->customPool = $customPool;
+        $this->forcePool = $forcePool;
     }
 
     public function setSignalHandler(SignalHandler $signalHandler)
@@ -503,18 +503,20 @@ class Processor
         $server = php_uname('n');
         $configFromFile = $this->getConfig();
         Logger::getLogger('queue')->trace('Config from file: '.var_export($configFromFile, true));
-        foreach ($configFromFile as $pool => $poolConfig) {
-            // todo оно вообще зачем? думаю нужно удалить
-            // хотя возможно нужно для отладки
-            // но тогда лучше сервер forceServer
-            if (isset($this->customPool) && $this->customPool !== $pool) {
-                continue;
-            }
 
-            if (in_array($server, $poolConfig['servers'], true)) {
-                $this->pool = $pool;
-                $this->poolConfig = $poolConfig;
-                break;
+        if ($this->forcePool !== null) {
+            if (array_key_exists($this->forcePool, $configFromFile)) {
+                Logger::getLogger('queue')->info('Force pool: '.var_export($this->forcePool, true));
+                $this->pool = $this->forcePool;
+                $this->poolConfig = $configFromFile[$this->forcePool];
+            }
+        } else {
+            foreach ($configFromFile as $pool => $poolConfig) {
+                if (in_array($server, $poolConfig['servers'], true)) {
+                    $this->pool = $pool;
+                    $this->poolConfig = $poolConfig;
+                    break;
+                }
             }
         }
 

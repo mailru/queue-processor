@@ -24,7 +24,6 @@ class Processor
     private $workersQty;
     private $childrenInfo;
     private $freeWorkersNumbers;
-    private $isChild = false;
     private $workersErrorsQty = [];
     /** @var ConfigReaderInterface */
     private $configReader;
@@ -147,7 +146,7 @@ class Processor
 
                 if ($this->queuesEmpty($this->queues)) {
                     Logger::getLogger('queue')->info('Tasks not found, sleep');
-                    sleep(2);
+                    usleep(2000000);
                     continue;
                 }
 
@@ -175,7 +174,6 @@ class Processor
                         "worker running, workersQty={$this->workersQty},queue={$queueNick},activeWorkersQty={$this->queuesInfo[$queueNick]['activeWorkersQty']}"
                     );
                 } else {
-                    $this->isChild = true;
                     LoggerMDC::put('queueNick', $queueNick);
                     LoggerMDC::put('processorPid', $processorPid);
                     LoggerMDC::put('workerPid', posix_getpid());
